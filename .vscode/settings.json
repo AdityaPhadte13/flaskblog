@@ -1,0 +1,6 @@
+{
+    "python.pythonPath": "~/flaskenv/bin/python",
+    "python.autoComplete.extraPaths": [
+        "~/flaskenv/bin/",
+    ],
+}
