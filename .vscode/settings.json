@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "~/flaskenv/bin/python",
+    "python.pythonPath": "/home/aditya/flaskenv/bin/python",
     "python.autoComplete.extraPaths": [
         "~/flaskenv/bin/",
     ],
