@@ -3,26 +3,31 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
-try: 
-    from flaskblog.local_settings import Gmusername, Gmpassword
-except:
-    print('Email and Username Not Set')
-    exit()
+from flaskblog.config import Config
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = '588bfc6c02c11378a5e620b0bd1dfb43'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
-db = SQLAlchemy(app)
-bcrypt = Bcrypt(app)
-login_manager = LoginManager(app)
-login_manager.login_view = 'login'
+db = SQLAlchemy()
+bcrypt = Bcrypt()
+login_manager = LoginManager()
+login_manager.login_view = 'users.login'
 login_manager.login_message_category = 'info'
-app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = Gmusername
-app.config['MAIL_PASSWORD'] = Gmpassword
-mail = Mail(app)
+mail = Mail()
 
+def create_app(config=Config):
+    app = Flask(__name__)
+    app.config.from_object(Config)
 
-from flaskblog import routes
+    db.init_app(app)
+    bcrypt.init_app(app)
+    login_manager.init_app(app)
+    mail.init_app(app)
+    
+    from flaskblog.users.routes import users
+    from flaskblog.posts.routes import posts
+    from flaskblog.main.routes import main
+    from flaskblog.errors.handlers import errors
+    app.register_blueprint(users)
+    app.register_blueprint(posts)
+    app.register_blueprint(main)
+    app.register_blueprint(errors)
+
+    return app
